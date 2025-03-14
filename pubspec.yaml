@@ -5,7 +5,9 @@ description: >
   and validation mechanisms. The package ensures security through issuer and audience validation, 
   expiration handling, and signature verification. Ideal for API authentication in Dart projects.
 version: 0.0.1
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/akashgk/dartapi_auth
+homepage: https://github.com/akashgk/dartapi_auth
+issue_tracker: https://github.com/akashgk/dartapi_auth/issues
 
 environment:
   sdk: ^3.7.0
