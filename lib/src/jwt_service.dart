@@ -19,6 +19,7 @@ class JwtService {
     this.algorithm = JWTAlgorithm.HS256,
   });
 
+  /// Generate Access token for the claims passed.
   String generateAccessToken({required Map<String, dynamic> claims}) {
     final payload = {
       'jti': _generateUniqueTokenId(),
@@ -36,6 +37,7 @@ class JwtService {
     ).sign(SecretKey(accessTokenSecret), algorithm: algorithm);
   }
 
+  /// Generate REfresh token for the claims passed.
   String generateRefreshToken({required String accessToken}) {
     final oldPayload = verifyAccessToken(accessToken);
     if (oldPayload == null) {
@@ -56,6 +58,7 @@ class JwtService {
     ).sign(SecretKey(refreshTokenSecret), algorithm: algorithm);
   }
 
+  /// verifies the access token
   Map<String, dynamic>? verifyAccessToken(String token) {
     try {
       final jwt = JWT.verify(token, SecretKey(accessTokenSecret));
@@ -78,6 +81,7 @@ class JwtService {
     }
   }
 
+  /// verifies the refresh token
   Map<String, dynamic>? verifyRefreshToken(String token) {
     try {
       final jwt = JWT.verify(token, SecretKey(refreshTokenSecret));

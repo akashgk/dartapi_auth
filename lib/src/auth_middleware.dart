@@ -12,7 +12,7 @@ Middleware authMiddleware(JwtService jwtService) {
       if (token == null || token.isEmpty) {
         return Response.forbidden(
           jsonEncode({'error': 'Missing or invalid token'}),
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/json'},
         );
       }
 
@@ -21,7 +21,7 @@ Middleware authMiddleware(JwtService jwtService) {
       if (payload == null) {
         return Response.forbidden(
           jsonEncode({'error': 'Invalid token'}),
-          headers: {'Content-Type': 'application/json'}
+          headers: {'Content-Type': 'application/json'},
         );
       }
 

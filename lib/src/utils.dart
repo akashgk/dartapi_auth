@@ -12,11 +12,10 @@ extension TokenHelpers on Map<String, String> {
   String? bearer() => authorization('Bearer');
   String? basic() => authorization('Basic');
 
-
   String? getToken() {
     return bearer() ?? basic();
   }
-  
+
   Map<String, String>? cookies() {
     final cookieString = this['Cookie'];
     if (cookieString == null) return null;

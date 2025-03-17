@@ -19,22 +19,18 @@ void main() {
     );
   });
 
-
   test('Generates a valid access token', () {
-    final token = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final token = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
     expect(token, isNotEmpty);
   });
 
-
   test('Verifies a valid access token', () {
-    final token = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final token = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
     final payload = jwtService.verifyAccessToken(token);
     expect(payload, isNotNull);
@@ -46,24 +42,25 @@ void main() {
     expect(payload['jti'], isNotEmpty);
   });
 
-
   test('Generates a valid refresh token', () {
-    final accessToken = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final accessToken = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
-    final refreshToken = jwtService.generateRefreshToken(accessToken: accessToken);
+    final refreshToken = jwtService.generateRefreshToken(
+      accessToken: accessToken,
+    );
     expect(refreshToken, isNotEmpty);
   });
 
   test('Verifies a valid refresh token', () {
-    final accessToken = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final accessToken = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
-    final refreshToken = jwtService.generateRefreshToken(accessToken: accessToken);
+    final refreshToken = jwtService.generateRefreshToken(
+      accessToken: accessToken,
+    );
     final payload = jwtService.verifyRefreshToken(refreshToken);
 
     expect(payload, isNotNull);
@@ -75,23 +72,25 @@ void main() {
     expect(payload['jti'], isNotEmpty);
   });
 
-
   test('Rejects an expired access token', () {
     final expiredToken = JWT({
       'sub': '123',
       'username': 'testuser',
       'type': 'access',
-      'iat': DateTime.now().subtract(Duration(hours: 2)).millisecondsSinceEpoch ~/ 1000,
-      'exp': DateTime.now().subtract(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      'iat':
+          DateTime.now().subtract(Duration(hours: 2)).millisecondsSinceEpoch ~/
+          1000,
+      'exp':
+          DateTime.now().subtract(Duration(hours: 1)).millisecondsSinceEpoch ~/
+          1000,
       'iss': issuer,
       'aud': audience,
-      'jti': 'expired-token-id'
+      'jti': 'expired-token-id',
     }).sign(SecretKey(accessSecret));
 
     final payload = jwtService.verifyAccessToken(expiredToken);
     expect(payload, isNull);
   });
-
 
   test('Fails verification when issuer is incorrect', () {
     final badIssuerToken = JWT({
@@ -99,7 +98,8 @@ void main() {
       'username': 'testuser',
       'type': 'access',
       'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      'exp': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      'exp':
+          DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
       'iss': 'wrong-issuer',
       'aud': audience,
       'jti': 'token-id',
@@ -109,14 +109,14 @@ void main() {
     expect(payload, isNull);
   });
 
-
   test('Fails verification when audience is incorrect', () {
     final badAudienceToken = JWT({
       'sub': '123',
       'username': 'testuser',
       'type': 'access',
       'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      'exp': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      'exp':
+          DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
       'iss': issuer,
       'aud': 'wrong-audience',
       'jti': 'token-id',
@@ -125,7 +125,6 @@ void main() {
     final payload = jwtService.verifyAccessToken(badAudienceToken);
     expect(payload, isNull);
   });
-
 
   test('Rejects an access token with missing required claims', () {
     final invalidToken = JWT({
@@ -138,15 +137,15 @@ void main() {
   });
 
   test('Fails verification when access token is tampered with and re-signed', () {
-    final originalToken = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final originalToken = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
     // Decode original token payload
     final parts = originalToken.split('.');
     final payload = jsonDecode(
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+      utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+    );
 
     // Modify payload
     payload['username'] = 'hacker';
@@ -163,18 +162,19 @@ void main() {
   });
 
   test('Fails verification when refresh token is tampered with and re-signed', () {
-    final accessToken = jwtService.generateAccessToken(claims: {
-      'sub': '123',
-      'username': 'testuser',
-    });
+    final accessToken = jwtService.generateAccessToken(
+      claims: {'sub': '123', 'username': 'testuser'},
+    );
 
-    final originalRefreshToken =
-        jwtService.generateRefreshToken(accessToken: accessToken);
+    final originalRefreshToken = jwtService.generateRefreshToken(
+      accessToken: accessToken,
+    );
 
     // Decode original refresh token payload
     final parts = originalRefreshToken.split('.');
     final payload = jsonDecode(
-        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+      utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+    );
 
     // Modify payload
     payload['username'] = 'hacker';
