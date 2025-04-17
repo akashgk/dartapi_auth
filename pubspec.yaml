@@ -2,7 +2,7 @@ name: dartapi_auth
 description: >
   DartAPI Auth is a lightweight and extensible authentication package for Dart backend applications.
   It provides JWT-based authentication with Auth Middleware.
-version: 0.0.3
+version: 0.0.4
 repository: https://github.com/akashgk/dartapi_auth
 homepage: https://github.com/akashgk/dartapi_auth
 issue_tracker: https://github.com/akashgk/dartapi_auth/issues

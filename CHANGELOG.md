@@ -1,3 +1,6 @@
+## 0.0.4
+- update docs
+
 ## 0.0.3
 - License change
 

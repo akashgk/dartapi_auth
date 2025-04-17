@@ -1,128 +1,127 @@
-# DartAPI Auth
+# dartapi_auth
 
-**DartAPI Auth** is a lightweight authentication package for Dart-based backend applications. It provides JWT-based authentication with built-in support for **access tokens**, **refresh tokens**, and **middleware protection**.
+**`dartapi_auth`** is a lightweight authentication and authorization package designed for the [DartAPI](https://pub.dev/packages/dartapi) ecosystem. It provides JWT-based authentication utilities, middleware for request protection, and token lifecycle management.
 
-## 🚀 Features
-- ✅ **JWT Authentication** (Signed JSON Web Tokens using `dart_jsonwebtoken`)
-- ✅ **Access & Refresh Tokens** (With Expiry & Rotation Support)
-- ✅ **Issuer (`iss`) & Audience (`aud`) Validation** for Security
-- ✅ **Middleware Protection** for Securing Routes
-- ✅ **Unit Tested** for Maximum Reliability
+It is fully compatible with projects generated using the [DartAPI CLI](https://pub.dev/packages/dartapi), and integrates seamlessly with `ApiRoute<ApiInput, ApiOutput>`.
 
 ---
 
-## 📌 Installation
+## ✨ Features
 
-Add `dartapi_auth` as a dependency in your Dart project:
+- 🔐 JWT Access & Refresh Token generation
+- 🧾 Token verification with expiration, type, and issuer checks
+- 🛡️ Plug-and-play authentication middleware for protected routes
+- 🧠 Helpers to extract tokens from headers or cookies
+- ✅ Works perfectly with `dartapi_core` and `dartapi`
 
-```sh
-dart pub add dartapi_auth
-```
+---
 
-Or, add it manually to your `pubspec.yaml`:
+## 📦 Installation
 
 ```yaml
 dependencies:
-  dartapi_auth: ^1.0.0
+  dartapi_auth: ^0.0.4
 ```
 
 ---
 
-## 🔑 Usage
+# 🚀 Usage
 
-### **1️⃣ Setting Up `JwtService`**
+### 🔑 Setup JwtService
+
 ```dart
-import 'package:dartapi_auth/jwt_service.dart';
-
-void main() {
-  final jwtService = JwtService(
-    accessTokenSecret: 'your-very-secure-secret',
-    refreshTokenSecret: 'your-super-secure-refresh-secret',
-    issuer: 'dartapi-auth',
-    audience: 'dartapi-users',
-  );
-
-  // ✅ Generate Access Token
-  final accessToken = jwtService.generateAccessToken(claims: {
-    'sub': 'user-123',
-    'username': 'john_doe',
-  });
-
-  print('Access Token: \$accessToken');
-}
+final jwtService = JwtService(
+  accessTokenSecret: 'my-secret',
+  refreshTokenSecret: 'my-refresh-secret',
+  issuer: 'dartapi',
+  audience: 'api-clients',
+);
 ```
 
----
+### 🧪 Generate Tokens
 
-### **2️⃣ Verifying Access Tokens**
 ```dart
-final payload = jwtService.verifyAccessToken(accessToken);
-if (payload != null) {
-  print('Token is valid! User: \${payload['username']}');
-} else {
-  print('Invalid token!');
-}
-```
+final accessToken = jwtService.generateAccessToken(claims: {
+  'sub': 'user-123',
+  'username': 'akash',
+});
 
----
-
-### **3️⃣ Generating & Verifying Refresh Tokens**
-```dart
 final refreshToken = jwtService.generateRefreshToken(accessToken: accessToken);
-final verifiedPayload = jwtService.verifyRefreshToken(refreshToken);
-
-if (verifiedPayload != null) {
-  print('Refresh Token Verified! User: \${verifiedPayload['username']}');
-} else {
-  print('Invalid Refresh Token!');
-}
 ```
 
----
+### 🔍 Verify Tokens
 
-### **4️⃣ Protecting Routes with Authentication Middleware**
 ```dart
-import 'package:dartapi_auth/auth_middleware.dart';
-import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart' as io;
-
-void main() async {
-  final handler = Pipeline()
-      .addMiddleware(authMiddleware(jwtService))
-      .addHandler((Request request) {
-    final user = request.context['user'];
-    return Response.ok('Hello, \${user?['username']}!');
-  });
-
-  final server = await io.serve(handler, 'localhost', 8080);
-  print('🚀 Server running on http://localhost:8080');
-}
+final accessPayload = jwtService.verifyAccessToken(accessToken);
+final refreshPayload = jwtService.verifyRefreshToken(refreshToken);
 ```
 
 ---
 
+## 🔒 Use Middleware to Protect Routes
 
-Example **Login Response:**
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ...",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ...",
-  "expires_in": 3600
-}
+### Import middleware
+
+```dart
+import 'package:dartapi_auth/dartapi_auth.dart';
+```
+
+### Apply per-route:
+
+```dart
+ApiRoute<void, List<UserDTO>>(
+  method: ApiMethod.get,
+  path: '/users',
+  typedHandler: getUsers,
+  middlewares: [authMiddleware(jwtService)],
+);
+```
+
+
+## 📄 Example Use in dartapi CLI Project
+
+`bin/main.dart`
+
+```dart
+final jwtService = JwtService(...);
+final app = DartAPI();
+
+app.addControllers([
+  UserController(jwtService),
+  AuthController(jwtService),
+]);
+```
+
+`UserController`
+
+```dart
+ApiRoute<void, List<UserDTO>>(
+  method: ApiMethod.get,
+  path: '/users',
+  typedHandler: getAllUsers,
+  middlewares: [authMiddleware(jwtService)],
+);
 ```
 
 ---
 
-## 🛠 **Testing the Package**
-Run tests using:
-```sh
-dart test
-```
+## 📁 Exports
+
+- `JwtService`
+- `authMiddleware()`
+- `utils.dart`
 
 ---
 
-## 📜 License
-This package is open-source and licensed under the **BSD-3-Clause License**.
+## 📄 License
 
-© 2025 Akash G Krishnan. All rights reserved.
+BSD 3-Clause License © 2025 Akash G Krishnan  
+[LICENSE](./LICENSE)
 
+---
+
+## 🔗 Related
+
+- [dartapi](https://pub.dev/packages/dartapi) - CLI to generate projects using this
+- [dartapi_core](https://pub.dev/packages/dartapi_core) - Type-safe API routing & controller logic
+- [dartapi_db](https://pub.dev/packages/dartapi_db) - DB abstraction layer
