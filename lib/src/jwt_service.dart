@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 class JwtService {
@@ -117,6 +120,8 @@ class JwtService {
   }
 
   String _generateUniqueTokenId() {
-    return DateTime.now().microsecondsSinceEpoch.toString();
+    final random = Random.secure();
+    final bytes = List<int>.generate(16, (_) => random.nextInt(256));
+    return base64Url.encode(bytes);
   }
 }
