@@ -16,7 +16,7 @@ Middleware authMiddleware(JwtService jwtService) {
         );
       }
 
-      final payload = jwtService.verifyAccessToken(token);
+      final payload = await jwtService.verifyAccessToken(token);
 
       if (payload == null) {
         return Response.forbidden(
