@@ -1,3 +1,6 @@
+## 0.0.7
+- Improve README: better structure and clarity
+
 ## 0.0.6
 - Add RS256 (asymmetric RSA) support via `JwtService.rs256()` constructor
 - Add token revocation via injectable `TokenStore` interface and `InMemoryTokenStore`
