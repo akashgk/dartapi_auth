@@ -1,3 +1,7 @@
+## 0.0.8
+- Add concurrent JTI uniqueness test: generate 1000 tokens concurrently and assert all JTIs are distinct
+- Add `false_secrets` in `pubspec.yaml` to suppress pub.dev false-positive secret warnings on test RSA keys
+
 ## 0.0.7
 - Improve README: better structure and clarity
 

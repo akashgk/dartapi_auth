@@ -293,4 +293,33 @@ void main() {
       await svc.revokeToken('not.a.jwt'); // should not throw
     });
   });
+
+  // ---------------------------------------------------------------------------
+  // JTI uniqueness under concurrency
+  // ---------------------------------------------------------------------------
+  group('JwtService — JTI uniqueness', () {
+    test('1000 concurrently generated tokens all have unique JTIs', () async {
+      final svc = JwtService(
+        accessTokenSecret: accessSecret,
+        refreshTokenSecret: refreshSecret,
+        issuer: issuer,
+        audience: audience,
+      );
+
+      final tokens = await Future.wait(
+        List.generate(
+          1000,
+          (_) => Future(() => svc.generateAccessToken(claims: {'sub': 'u1'})),
+        ),
+      );
+
+      final payloads = await Future.wait(
+        tokens.map((t) => svc.verifyAccessToken(t)),
+      );
+
+      final jtis = payloads.map((p) => p!['jti'] as String).toList();
+      expect(jtis.toSet().length, equals(jtis.length),
+          reason: 'All 1000 JTIs must be unique');
+    });
+  });
 }
