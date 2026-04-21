@@ -173,12 +173,18 @@ class JwtService {
   }
 
   /// Verifies a refresh token and returns its payload, or `null` if invalid.
+  ///
+  /// When a [tokenStore] is configured, the token is automatically revoked
+  /// after successful verification (rotation). This prevents a refresh token
+  /// from being used more than once, limiting the window for token-reuse attacks.
   Future<Map<String, dynamic>?> verifyRefreshToken(String token) async {
     final payload = _verifyRefreshTokenSync(token);
     if (payload == null) return null;
-    if (tokenStore != null &&
-        await tokenStore!.isRevoked(payload['jti'] as String)) {
-      return null;
+    final jti = payload['jti'] as String?;
+    if (tokenStore != null && jti != null) {
+      if (await tokenStore!.isRevoked(jti)) return null;
+      // Rotation: consume this refresh token so it cannot be reused.
+      await tokenStore!.revoke(jti);
     }
     return payload;
   }

@@ -1,3 +1,6 @@
+## 0.0.9
+- `verifyRefreshToken` now automatically revokes the used refresh token when a `tokenStore` is configured — prevents token-reuse attacks (rotation). Without a `tokenStore` the behaviour is unchanged (backwards-compatible).
+
 ## 0.0.8
 - Add concurrent JTI uniqueness test: generate 1000 tokens concurrently and assert all JTIs are distinct
 - Add `false_secrets` in `pubspec.yaml` to suppress pub.dev false-positive secret warnings on test RSA keys

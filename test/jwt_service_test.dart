@@ -297,6 +297,44 @@ void main() {
   // ---------------------------------------------------------------------------
   // JTI uniqueness under concurrency
   // ---------------------------------------------------------------------------
+  group('JwtService — refresh token rotation', () {
+    test('refresh token is revoked after verifyRefreshToken when tokenStore present', () async {
+      final store = InMemoryTokenStore();
+      final svc = JwtService(
+        accessTokenSecret: accessSecret,
+        refreshTokenSecret: refreshSecret,
+        issuer: issuer,
+        audience: audience,
+        tokenStore: store,
+      );
+      final access = svc.generateAccessToken(claims: {'sub': 'u1'});
+      final refresh = svc.generateRefreshToken(accessToken: access);
+
+      // First use — succeeds and auto-revokes
+      final payload = await svc.verifyRefreshToken(refresh);
+      expect(payload, isNotNull);
+
+      // Second use — rejected because the token was rotated
+      final reuse = await svc.verifyRefreshToken(refresh);
+      expect(reuse, isNull);
+    });
+
+    test('refresh token without tokenStore is not rotated (backwards-compatible)', () async {
+      final svc = JwtService(
+        accessTokenSecret: accessSecret,
+        refreshTokenSecret: refreshSecret,
+        issuer: issuer,
+        audience: audience,
+      );
+      final access = svc.generateAccessToken(claims: {'sub': 'u1'});
+      final refresh = svc.generateRefreshToken(accessToken: access);
+
+      expect(await svc.verifyRefreshToken(refresh), isNotNull);
+      // Without a store, the token can be reused
+      expect(await svc.verifyRefreshToken(refresh), isNotNull);
+    });
+  });
+
   group('JwtService — JTI uniqueness', () {
     test('1000 concurrently generated tokens all have unique JTIs', () async {
       final svc = JwtService(
