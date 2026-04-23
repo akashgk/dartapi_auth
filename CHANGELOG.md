@@ -1,3 +1,7 @@
+## 0.0.10
+- Upgrade `dart_jsonwebtoken` from `^3.1.1` to `^3.4.1`
+- Upgrade `lints` from `^5.0.0` to `^6.1.0`
+
 ## 0.0.9
 - `verifyRefreshToken` now automatically revokes the used refresh token when a `tokenStore` is configured — prevents token-reuse attacks (rotation). Without a `tokenStore` the behaviour is unchanged (backwards-compatible).
 
