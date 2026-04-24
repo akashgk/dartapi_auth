@@ -1,3 +1,12 @@
+## 0.0.11
+**Final release — package deprecated.**
+
+Auth is now part of `dartapi_core ^0.1.1`. This release is a backwards-compatible re-export shim.
+
+- `lib/dartapi_auth.dart` re-exports `JwtService`, `TokenStore`, `InMemoryTokenStore`, `authMiddleware`, `apiKeyMiddleware`, and `TokenHelpers` from `dartapi_core`.
+- All original source files removed; `dartapi_core` is the new canonical home.
+- Migrate: replace `dartapi_auth: ^0.0.x` with `dartapi_core: ^0.1.1` and update imports from `package:dartapi_auth/dartapi_auth.dart` to `package:dartapi_core/dartapi_core.dart`.
+
 ## 0.0.10
 - Upgrade `dart_jsonwebtoken` from `^3.1.1` to `^3.4.1`
 - Upgrade `lints` from `^5.0.0` to `^6.1.0`
