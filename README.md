@@ -1,14 +1,47 @@
 # dartapi_auth
 
-JWT authentication and API key middleware for the [DartAPI](https://pub.dev/packages/dartapi) ecosystem. Supports HS256 (symmetric) and RS256 (asymmetric) signing, token revocation, and static API key validation.
+> **Deprecated.** Auth is now built into [`dartapi_core`](https://pub.dev/packages/dartapi_core) — use that instead.
+> This package re-exports `JwtService`, `authMiddleware`, `apiKeyMiddleware`, `TokenStore`, `InMemoryTokenStore`, and `TokenHelpers` from `dartapi_core` for backwards compatibility, but will not receive new features.
 
 ---
 
-## Installation
+## Migration
+
+Replace:
 
 ```yaml
 dependencies:
-  dartapi_auth: ^0.0.6
+  dartapi_auth: ^0.0.11
+```
+
+With:
+
+```yaml
+dependencies:
+  dartapi_core: ^0.1.3
+```
+
+Replace:
+
+```dart
+import 'package:dartapi_auth/dartapi_auth.dart';
+```
+
+With:
+
+```dart
+import 'package:dartapi_core/dartapi_core.dart';
+```
+
+All exported symbols (`JwtService`, `authMiddleware`, `apiKeyMiddleware`, `TokenStore`, `InMemoryTokenStore`, `TokenHelpers`) are identical — no other code changes are needed.
+
+---
+
+## Installation (legacy)
+
+```yaml
+dependencies:
+  dartapi_auth: ^0.0.11
 ```
 
 ---
